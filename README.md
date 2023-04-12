@@ -1,1 +1,1 @@
-# DUST-Compiler-with-Python
+# DUST Compiler with Python
