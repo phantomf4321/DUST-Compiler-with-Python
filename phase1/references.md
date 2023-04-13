@@ -1,5 +1,5 @@
 - https://www.w3schools.com/python/python_file_open.asp
-- - https://www.geeksforgeeks.org/read-a-file-line-by-line-in-python/
+- https://www.geeksforgeeks.org/read-a-file-line-by-line-in-python/
 - https://pythonbasics.org/string-find/#:~:text=Python%20%2D%20Python%20Tutorial-,String%20find()%20in%20Python,the%20character%20position%20if%20found.
 - https://stackoverflow.com/questions/959215/how-do-i-remove-leading-whitespace-in-python
 - https://pythonexamples.org/python-split-string-by-comma/
