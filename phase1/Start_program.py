@@ -2,6 +2,7 @@ class program_start:
     
     def __init__(program, code):
         program.code = Read_code(code)
+        program.numberOfLines = program.code.line_counter()
         
     def __str__(program):
         return f"{program.code.body}"
@@ -25,6 +26,14 @@ class program_start:
             return False
         
     def extract_def(program, Line):
+        
+        def_depth = program.code.depth_finder(Line)
+        start_line = Line
+        for counter in range(start_line+1, program.numberOfLines):
+            if(program.code.depth_finder(counter) == def_depth):
+                end_line = counter
+                break
+                
         s = program.code.remove_space(Line)
         line = s.replace("(", " ( ").replace(")", " ) ")
         line = line.split(" ")
@@ -33,8 +42,9 @@ class program_start:
         name = line[2]
         input_type = []
         input_name = []
+        parameter_type = []
+        parameter_name = []
         
-
         p_index = line.index(')')
         
         for i in range(4, p_index):
@@ -44,8 +54,13 @@ class program_start:
                 input_name.append(line[i])
                 
         
+        for counter in range(start_line+1, end_line):
+            print(counter, program.code.body[counter])
+                
         
-        return(Type, name, input_type, input_name)
+        
+        
+        return(def_depth, start_line, end_line, Type, name, input_type, input_name)
         
         
     def ha(program):
