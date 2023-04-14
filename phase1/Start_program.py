@@ -2,10 +2,13 @@ from Read import Read_code
 import re
 
 class program_start:
+    
     def __init__(program, code):
-        program.code = Read_code(code)     
+        program.code = Read_code(code)
+        
     def __str__(program):
         return f"{program.code.body}"
+    
     def find_imports(program):
         Line = 0
         for line in program.code.body:
@@ -14,7 +17,8 @@ class program_start:
                 if 'import' in s:
                     index = s.find('import')
                     print("    import class: ", program.code.body[Line][7:], end = "")
-            Line += 1       
+            Line += 1
+            
     def find_class(program):
         Line = 0
         for line in program.code.body:
@@ -30,5 +34,12 @@ class program_start:
                     parents = ''.join(map(str, parents))
                     parents = parents.replace('(','').replace(')','').replace(' ','') 
                     
+                    header = "    class: ", class_name, "/ class parents: ", parents, " {"
+                    footer = "    }"
                     print("    class: ", class_name, "/ class parents: ", parents, " {",sep='')
+                    print("")
+                    '''
+                    Functions Adn Body!
+                    '''
+                    print("    }")
             Line += 1
