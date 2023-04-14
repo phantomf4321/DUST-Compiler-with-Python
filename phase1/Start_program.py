@@ -1,6 +1,3 @@
-from Read import Read_code
-import re
-
 class program_start:
     
     def __init__(program, code):
@@ -18,6 +15,48 @@ class program_start:
                     index = s.find('import')
                     print("    import class: ", program.code.body[Line][7:], end = "")
             Line += 1
+            
+            
+    def def_confirm(program, Line):
+        s = program.code.remove_space(Line)
+        if 'def' in s:
+            return True
+        else:
+            return False
+        
+    def extract_def(program, Line):
+        s = program.code.remove_space(Line)
+        line = s.replace("(", " ( ").replace(")", " ) ")
+        line = line.split(" ")
+        
+        Type = line[1]
+        name = line[2]
+        input_type = []
+        input_name = []
+        
+
+        p_index = line.index(')')
+        
+        for i in range(4, p_index):
+            if(i %2 == 0):
+                input_type,input_type.append(line[i])
+            else:
+                input_name.append(line[i])
+                
+        
+        
+        return(Type, name, input_type, input_name)
+        
+        
+    def ha(program):
+        Line = 0
+        for line in program.code.body:
+            if(program.def_confirm(Line)):
+                print("yup")
+            else:
+                print("NO")
+            Line += 1
+        
             
     def find_class(program):
         Line = 0
@@ -38,8 +77,8 @@ class program_start:
                     footer = "    }"
                     print("    class: ", class_name, "/ class parents: ", parents, " {",sep='')
                     print("")
-                    '''
+                    '''================
                     Functions Adn Body!
-                    '''
+                    ================'''
                     print("    }")
             Line += 1
