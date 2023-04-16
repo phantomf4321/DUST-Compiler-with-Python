@@ -26,17 +26,28 @@ class program_start:
             return False
         
     def extract_def(program, Line):
-        
+        '''
+        It extracts all the main elements of a function for us. By receiving 
+        the initial line, it finds its depth. Then the range of the function 
+        lines is calculated and the operation continues.
+        '''
+        #find depth
         def_depth = program.code.depth_finder(Line)
+        #initail line of function
         start_line = Line
+        #final line of function
         for counter in range(start_line+1, program.numberOfLines):
             if(program.code.depth_finder(counter) == def_depth):
                 end_line = counter
                 break
-                
+        #The initial spaces of the string are removed for better calculations.      
         s = program.code.remove_space(Line)
+        #a space is created between the parentheses so that they are recognized as an independent element in the list
+        #Example: eat(Food food, int c) -> eat ( Food food, int c )
         line = s.replace("(", " ( ").replace(")", " ) ")
+        #elements separated by space become independent
         line = line.split(" ")
+        
         
         Type = line[1]
         name = line[2]
