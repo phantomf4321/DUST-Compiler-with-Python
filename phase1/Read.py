@@ -1,6 +1,6 @@
 class Read_code:
     def __init__(code, body):
-        print("constructor is called!")
+        #print("constructor is called!")
         code.body = body
         
     def __str__(code):
@@ -48,6 +48,21 @@ class Read_code:
                     open_braket_counter = open_braket_counter-1
                 
             
+    def find_imports(code):
+        Line = 0
+        imports = []
+        for line in code.body:
+            if(code.depth_finder(Line) == 0):
+                s = code.remove_space(Line)
+                if 'import' in s:
+                    index = s.find('import')
+                    s = code.body[Line][7:]
+                    s = s.strip('\n')
+                    imports.append(s)
+
+                Line += 1
+                
+        return(imports)
             
     def field_confirm(code, line_no):
         keywords = ['int', 'bool', 'float', 'string', 'double']
@@ -98,7 +113,6 @@ class Read_code:
     
     
     def extract_def(code, line_no, class_name):
-        print(class_name)
         def_depth = code.depth_finder(line_no)#find depth
         start_line = line_no#initail line of function
         end_line = code.next_braket(line_no)#final line of function
@@ -142,6 +156,41 @@ class Read_code:
                 field_name.append(field[1])
             
         return(def_depth, start_line, end_line, Type, name, input_type, input_name, field_type, field_name)
+    
+    
+    def extract_global_def(code, line_no, class_name):
+        print(class_name)
+        def_depth = code.depth_finder(line_no)#find depth
+        start_line = line_no#initail line of function
+        end_line = code.next_braket(line_no)#final line of function
+        
+        #The initial spaces of the string are removed for better calculations.      
+        s = code.remove_space(line_no)#a space is created between the parentheses so that they are recognized as an independent element in the list
+        line = s.replace("(", " ( ").replace(")", " ) ")#elements separated by space become independent Example: eat(Food food, int c) -> eat ( Food food, int c )
+        line = line.split(" ")
+        
+        
+        Type = line[1]
+        name = line[2]
+        input_type = []
+        input_name = []
+        p_index = line.index(')')
+        for i in range(4, p_index):
+            if(i %2 == 0):
+                input_type.append(line[i])
+            else:
+                input_name.append(line[i])
+                    
+        field_type = []
+        field_name = []
+        for counter in range(start_line+1, end_line):      
+            if(code.field_confirm(counter)):
+                field = code.get_field(counter)
+                field_type.append(field[0])
+                field_name.append(field[1])
+            
+        return(def_depth, start_line, end_line, Type, name, input_type, input_name, field_type, field_name)
+    
     
     
     def extract_calss(code, line_no):
