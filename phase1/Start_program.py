@@ -1,110 +1,73 @@
+from Read import Read_code
+import re
+
+
 class program_start:
     
     def __init__(program, code):
+        print("program start{")
         program.code = Read_code(code)
         program.numberOfLines = program.code.line_counter()
         
     def __str__(program):
         return f"{program.code.body}"
-    
-    def find_imports(program):
-        Line = 0
-        for line in program.code.body:
-            if(program.code.depth_finder(Line) == 0):
-                s = program.code.remove_space(Line)
-                if 'import' in s:
-                    index = s.find('import')
-                    print("    import class: ", program.code.body[Line][7:], end = "")
-            Line += 1
             
             
-    def def_confirm(program, Line):
-        s = program.code.remove_space(Line)
-        if 'def' in s:
-            return True
-        else:
-            return False
-        
-    def extract_def(program, Line):
-        '''
-        It extracts all the main elements of a function for us. By receiving 
-        the initial line, it finds its depth. Then the range of the function 
-        lines is calculated and the operation continues.
-        '''
-        #find depth
-        def_depth = program.code.depth_finder(Line)
-        #initail line of function
-        start_line = Line
-        #final line of function
-        for counter in range(start_line+1, program.numberOfLines):
-            if(program.code.depth_finder(counter) == def_depth):
-                end_line = counter
-                break
-        #The initial spaces of the string are removed for better calculations.      
-        s = program.code.remove_space(Line)
-        #a space is created between the parentheses so that they are recognized as an independent element in the list
-        #Example: eat(Food food, int c) -> eat ( Food food, int c )
-        line = s.replace("(", " ( ").replace(")", " ) ")
-        #elements separated by space become independent
-        line = line.split(" ")
-        
-        
-        Type = line[1]
-        name = line[2]
-        input_type = []
-        input_name = []
-        parameter_type = []
-        parameter_name = []
-        
-        p_index = line.index(')')
-        
-        for i in range(4, p_index):
-            if(i %2 == 0):
-                input_type,input_type.append(line[i])
-            else:
-                input_name.append(line[i])
+    def expand_class(program):
+        import_counter = 0
+        imports = program.code.find_imports()
+        for Line in imports:
+            print("    import class: ", imports[imports.index(Line)], sep='')
+            
+            
+        for Line_counter in range(0, program.numberOfLines):
+            if(program.code.class_confirm(Line_counter)):
+                classes = program.code.extract_calss(Line_counter)
                 
-        
-        for counter in range(start_line+1, end_line):
-            print(counter, program.code.body[counter])
+                name = classes[3]
+                parents = classes[4]
+                print("    class: ", name, "/ class parents:", ' '.join(parents), "{", sep='')
+                print("")
                 
-        
-        
-        
-        return(def_depth, start_line, end_line, Type, name, input_type, input_name)
-        
-        
-    def ha(program):
-        Line = 0
-        for line in program.code.body:
-            if(program.def_confirm(Line)):
-                print("yup")
-            else:
-                print("NO")
-            Line += 1
-        
-            
-    def find_class(program):
-        Line = 0
-        for line in program.code.body:
-            if(program.code.depth_finder(Line) == 0):
-                s = program.code.remove_space(Line)
-                if 'class' in s:
-                    index = s.find('class')
-                    spareted_string = program.code.body[Line][6:].partition('(')
-                    class_name = spareted_string[0].lstrip()
+                fields = classes[5]
+                for Line in fields:
+                    print("        field: ", fields[fields.index(Line)][1], "/ type= ", fields[fields.index(Line)][0], sep='')
                     
-                    parets = str(program.code.body[Line][6:])
-                    parents = re.findall(r'\(.*?\)', parets)
-                    parents = ''.join(map(str, parents))
-                    parents = parents.replace('(','').replace(')','').replace(' ','') 
+                print()   
+                functions = classes[6]
+                for Line in functions:
+                    #print(Line)
+                    if(functions[functions.index(Line)][3] == 'constructor'):
+                        print("        class constructor: ", functions[functions.index(Line)][4], "{", sep='')
+                    else:
+                        if(functions[functions.index(Line)][3] == 'void'):
+                            print("        class method: ", functions[functions.index(Line)][4], "{", sep='')
+                        else:
+                            print("        class method: ", functions[functions.index(Line)][4],"/ return type: ", functions[functions.index(Line)][3], "{", sep='')
+                        
                     
-                    header = "    class: ", class_name, "/ class parents: ", parents, " {"
-                    footer = "    }"
-                    print("    class: ", class_name, "/ class parents: ", parents, " {",sep='')
-                    print("")
-                    '''================
-                    Functions Adn Body!
-                    ================'''
-                    print("    }")
-            Line += 1
+                    parameter_type = functions[functions.index(Line)][5]
+                    parameter_name = functions[functions.index(Line)][6]
+                    if parameter_type[0] != '':
+                        print("            parameter list: [", end='')
+                        for INDEX in parameter_type:
+                            counter = parameter_type.index(INDEX)
+                            print( parameter_type[counter], " ", parameter_name[counter], sep='', end='')
+                        print("]")
+                        
+                    def_fields_type = functions[functions.index(Line)][7]
+                    def_fields_name = functions[functions.index(Line)][8]
+                    if def_fields_type:
+                        for Line in def_fields_type:
+                            counter = def_fields_type.index(Line)
+                            print("            field: ", def_fields_name[counter], "/ type= ", def_fields_type[counter], sep='')
+                            
+                    print("        }")
+                print("    }")
+        print("}")
+        
+f = open("testcase/test.txt", "r")
+text = f.readlines()
+
+c2 = program_start(text)
+c2.expand_class()
