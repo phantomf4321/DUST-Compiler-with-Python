@@ -77,7 +77,7 @@ class program_start:
         print("}")
         
 #Open the case test file        
-f = open("testcase/test.txt", "r")
+f = open("inputs/test.txt", "r")
 text = f.readlines()
 
 #construct an object
