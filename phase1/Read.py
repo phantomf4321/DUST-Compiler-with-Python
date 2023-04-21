@@ -9,19 +9,22 @@ class Read_code:
     def get_line(code, line_no):
         return code.body[line_no]
     
+    #Removes spaces at the beginning of strings:
     def remove_space(code, line_no):
         space_counter = 0
         index = 0
         new_str = code.body[line_no].lstrip()
         #print("Line ", line_no, " is: ", code.body[line_no])
         return new_str
-        
+    
+    #numer of lines in code:
     def line_counter(code):
         counter = 0
         for line in code.body:
             counter += 1
         return counter
     
+    #The depth is determined according to the condition of the brackets:
     def depth_finder(code, line_no):
         space_counter = 0
         index = 0
@@ -33,7 +36,8 @@ class Read_code:
                 index += 1
             else:
                 return space_counter/4
-            
+     
+    #In each part of the code, it is determined in which line we reach the bracket:
     def next_braket(code, line_no): 
         current_line = line_no
         last_line = code.line_counter()
@@ -47,7 +51,7 @@ class Read_code:
                 else:
                     open_braket_counter = open_braket_counter-1
                 
-            
+    #It puts the imports in an array and returns:        
     def find_imports(code):
         Line = 0
         imports = []
@@ -63,25 +67,27 @@ class Read_code:
                 Line += 1
                 
         return(imports)
-            
+     
+    #is field?
     def field_confirm(code, line_no):
         keywords = ['int', 'bool', 'float', 'string', 'double']
         s = code.body[line_no]
         s = code.remove_space(line_no)
         s = s.split(" ")
         confirm = any(word in keywords for word in s)
-        if(confirm):
-            if "=" not in s:
-                if "def" not in s:
+        if(confirm):#is there char?
+            if "=" not in s:#There is no assignment command
+                if "def" not in s:#it is not function
                     return True
         else:
-            if(s[0][0].isupper()):
+            if(s[0][0].isupper()):#start with capital letter
                 if "=" not in s:
                     if "def" not in s:
                         return True
             else:
                 return False
             
+    #Creates two arrays of type and name. returns it:        
     def get_field(code, line_no):
         s = code.body[line_no]
         s = code.remove_space(line_no).strip('\n').split(" ")
@@ -95,14 +101,14 @@ class Read_code:
             
         return(field_type, field_name)
             
-    
+    #is function?
     def def_confirm(code, line_no):
         s = code.body[line_no]
         if 'def' in s:
             return True
         else:
             return False
-        
+    #is class?   
     def class_confirm(code, line_no):
         s = code.body[line_no]
         if 'class' in s:
